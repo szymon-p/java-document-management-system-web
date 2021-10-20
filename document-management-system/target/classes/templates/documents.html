@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<!-- Dodanie przestrzeni nazw Thymeleafa (xmlns) -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+
+<!-- Dodanie przeskalowania strony w celu dopasowania do zawartości -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>System Zarządzania Dokumentami</title>
+
+<!-- Import styli odpowiedzialnych za wygląd panelu bocznego -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<!-- Import styli odpowiedzialnych za wygląd tabeli/sekcji środkowej strony -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- Import styli odpowiedzialnych za paginację -->
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<!-- Import styli odpowiedzialnych za kolejno znak podziału sekcji w panelu bocznym oraz za wygląd stopki strony -->
+<link rel="stylesheet" href="css/divider.css">
+<link rel="stylesheet" href="css/footer.css">
+
+<!-- Skrypt odpowiedzialny za funkcjonalność prezentowania określonej liczby rekordów w tabeli 5, 10, 15, etc. -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Import skryptów odpowiedzialnych za funkcjonalność filtrowania dokumentów -->
+<script src="javaScript/algKMP.js"></script>
+<script src="javaScript/algKR.js"></script>
+<script src="javaScript/algBM.js"></script>
+<script src="javaScript/algBIN.js"></script>
+<script src="javaScript/algLIN.js"></script>
+
+<!-- Import skryptu odpowiedzialnego za funkcjonalność przeliczania stron i wyświetlenia struktury HTML dla paginacji -->
+<script type="text/javascript" src="javaScript/pagination.js"></script>
+
+</head>
+
+<body>
+
+	<!-- Początek panelu bocznego menu -->
+	<div class="w3-sidebar w3-teal w3-bar-block" style="width: 11%">
+
+		<!-- Przekierowanie na podstronę /documents z logo aplikacji -->
+		<a href="/documents" class="w3-bar-item btn w3-center shadow-none w3-section">
+			<img src="img/documents_40_40.png">
+		</a>
+
+		<!-- Nagłówek pod logo aplikacji -->
+		<div class="w3-small w3-center w3-section text-uppercase">
+			<strong>System Zarządzania Dokumentami</strong>
+		</div>
+
+		<!-- Podział sekcji, dla którego importowany był styl CSS -->
+		<hr class="divider">
+
+		<!-- Submenu dla przejścia do podstrony /documents z filtrowaniem dokumentów -->
+		<a href="/documents" class="w3-bar-item btn btn-outline-light shadow-none">
+			<i class="fa fa-file-text-o"></i>&nbsp; Dokumenty
+		</a>
+	</div>
+	<!-- Koniec panelu bocznego menu -->
+
+	<!-- Początek sekcji głównej/środkowej aplikacji -->
+	<div style="margin-left: 11%">
+
+		<!-- Nagłówek podstrony -->
+		<nav class="navbar navbar-expand navbar-light mb-4 shadow">
+			<h3 class="text-muted">Dokumenty</h3>
+		</nav>
+
+		<div class="mb-5 container-fluid">
+
+			<!-- Sekcja z filtrami dla badanych algorytmów -->
+			<div class="row ml-1 form-group">
+				<!-- Nagłówki dla filtrów -->
+				<div class="col-sm-2 ">Algorytm Knutha-Morrisa-Pratta</div>
+				<div class="col-sm-2">Algorytm Karpa-Rabina</div>
+				<div class="col-sm-2">Algorytm Boyera-Moorea</div>
+				<div class="col-sm-2">Algorytm binarny</div>
+				<div class="col-sm-2">Algorytm liniowy</div>
+			</div>
+
+			<!-- Inputy dla filtrów badanych algorytmów. Użyto unikalnych id, po których inputy są lokalizowane w skryptach algorytmów oraz paginacji -->
+			<div class="row ml-1 form-group">
+				<div class="col-sm-2">
+					<input class="form-control" type="text" id="inputAlgKMP"
+						onkeyup="algKMP()" placeholder="Filtruj...">
+				</div>
+				<div class="col-sm-2">
+					<input class="form-control" type="text" id="inputAlgKR"
+						onkeyup="algKR()" placeholder="Filtruj...">
+				</div>
+				<div class="col-sm-2">
+					<input class="form-control" type="text" id="inputAlgBM"
+						onkeyup="algBM()" placeholder="Filtruj...">
+				</div>
+				<div class="col-sm-2 mb-4">
+					<input class="form-control" type="text" id="inputAlgBIN"
+						onkeyup="algBIN()" placeholder="Filtruj...">
+				</div>
+				<div class="col-sm-2">
+					<input class="form-control" type="text" id="inputAlgLIN"
+						onkeyup="algLIN()" placeholder="Filtruj...">
+				</div>
+			</div>
+			<!-- Koniec sekcji z filtrami dla badanych algorytmów -->
+
+			<div class="card shadow">
+				<div class="card-body">
+					<div class="form-group">
+						<div class="mb-4">
+
+							<!-- Początek listy rozwijanej odpowiedzialnej za prezentację określonej liczby rekordów.
+							Posiada unikalny numer id, na podstawie którego w pagination.js określana jest liczba wyświetlanych rekordów -->
+							<select class="form-control" id="maxRows" style="width: 200px;">
+								<option value="5000">Wszystkie rekordy</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+								<option value="70">70</option>
+								<option value="100">100</option>
+							</select>
+							<!-- Koniec listy rozwijanej -->
+
+						</div>
+
+						<!-- Początek tabeli, w której wyświetlane są dokumenty zawarte w bazie danych. 
+						Załadowanie dokumentów odbywa się za pomocą algorytmów oraz skryptu pagination. 
+						Dlatego tabela została oznaczona unikalnym id. -->
+						<table id="table" class="table table-hover table-bordered">
+							<thead>
+								<!-- Nagłówki tabeli -->
+								<tr class="text-muted">
+									<th>Id</th>
+									<th>Klient - imię i nazwisko</th>
+									<th>Klient - firma</th>
+									<th>Data zakończenia</th>
+									<th>Data wprowadzenia</th>
+									<th>Status dokumentu</th>
+									<th>Typ dokumentu</th>
+									<th>Przypisany użytkownik</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<!-- Zastosowano Thymeleafa do utworzenia pętli na podstawie obiektu Document oraz jego pól. 
+								Lista dokumentów została przekazana do widoku z poziomu kontrolera za pomocą klucza "documents".
+								Dodano kolumnę z iteratorem numerującym kolejne wiersze itr.count -->
+								<tr th:each="document, itr: ${documents}">
+									<!-- Wywołanie kolejnych kolumn za pomocą pól obiektu Document -->
+									<td><p th:text="|${itr.count}|"></p></td>
+									<td><p th:text="|${document.client}|"></p></td>
+									<td><p th:text="|${document.company}|"></p></td>
+									<td><p th:text="|${document.endDate}|"></p></td>
+									<td><p th:text="|${document.openDate}|"></p></td>
+									<td><p th:text="|${document.status}|"></p></td>
+									<td><p th:text="|${document.type}|"></p></td>
+									<td><p th:text="|${document.user}|"></p></td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- Koniec tabeli -->
+
+						<!-- Początek paginacji. Szkielet HTML, w który zostanie wstrzyknięta funkcjonalność paginacji.
+						Lokalizacja w skrypcie pagination odbywa się po klasie oraz po id -->
+						<div>
+							<nav>
+								<ul class="pagination">
+									<li></li>
+									<li id="prev"></li>
+								</ul>
+							</nav>
+						</div>
+						<!-- Koniec paginacji -->
+
+						<!-- Początek podsumowania strony.
+						W akapit zostanie wstrzyknięta aktualna strona, liczba całkowita stron oraz liczba wyfiltrowanych rekordów.
+						Powiązanie ze skryptem pagination odbywa się po id -->
+						<div>
+							<p id="amountOfRows">amountOfRows</p>
+						</div>
+						<!-- Koniec podsumowania strony -->
+
+						<!-- Wykonanie metody getPagination() ze skryptu pagination.js.
+						Po załadowaniu strony następuje ustawienie wybranych przez użytkownika opcji na liście ilości wyświetlanych rekordów.
+						Następuje również obliczenie ilości stron oraz wyświetlenie podsumowania strony -->
+						<script type="text/javascript">getPagination();</script>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Początek stopki strony. Wygląd ładowany jest z pliku CSS po klasie -->
+		<footer class="footer">
+			<div>Copyright &copy; System Zarządzania Dokumentami 2020</div>
+		</footer>
+		<!-- Koniec stopki strony -->
+
+	</div>
+	<!-- Koniec sekcji głównej/środkowej aplikacji -->
+
+</body>
+</html>

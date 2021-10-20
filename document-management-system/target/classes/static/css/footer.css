@@ -1,0 +1,28 @@
+.footer {
+	/* Pozycja pozostaje niezmienna wzglêdem przewijania ekranu */
+	position: fixed;
+	
+	/* Rozmiar tekstu */
+	font-size: 13px;
+	
+	/* Odstêp od elementu po lewej stronie */
+	left: 0;
+	
+	/* Odstêp górny */
+	padding: 15px 0;
+	
+	/* Odstêp od elementu poni¿ej */
+	bottom: 0px;
+	
+	/* D³ugoœæ sekcji w procentach, w odniesieniu do sekcji w której stopka jest zawarta */
+	width: 111%;
+	
+	/* Kolor t³a sekcji*/
+	background-color: #F3F3F3;
+	
+	/* Kolor tekstu stopki */
+	color: gray;
+	
+	/* Wyœrodkowanie tekstu stopki */
+	text-align: center;
+}

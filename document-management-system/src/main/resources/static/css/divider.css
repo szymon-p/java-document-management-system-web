@@ -1,0 +1,13 @@
+hr.divider {
+	/* Styl obramowania szerokoœæ/styl/kolor */
+	border: 1px solid white;
+	
+	/* zaokr¹glenie czterech rogów elementu */
+	border-radius: 5px;
+	
+	/* Prawy margines elementu */
+	margin-right: 15px;
+	
+	/* Lewy margines elementu */
+	margin-left: 15px;
+}
